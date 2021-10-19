@@ -1,7 +1,7 @@
 import {AIR_QUALITY_STANDARDS} from "../constants/global-constans";
 
 export function getAirQualityByIndex(aqi) {
-    const AQI = aqi >= 0 ? Math.ceil(aqi): 0;
+    const AQI = aqi >= 0 ? Math.ceil(aqi) : 0;
     const airQuality = AIR_QUALITY_STANDARDS.find((item) => (AQI >= item.aqiMin && AQI <= item.aqiMax));
 
     if (airQuality) {
@@ -19,4 +19,8 @@ export function truncateText(string, maxCharacters = 10) {
     }
 
     return string;
+}
+
+export function urlSlug(str) {
+    return str.trim().toLowerCase().split(/\s+/).join("-");
 }

@@ -13,10 +13,10 @@ const axisStyles = {
     }
 };
 
-const ComparisonChart = ({citiesData}) => {
-    const tickValues = useMemo(() => citiesData.map(item => item.city), [citiesData]);
+const ComparisonChart = ({cities}) => {
+    const tickValues = useMemo(() => cities.map(item => item.city), [cities]);
 
-    if (!citiesData.length) {
+    if (!cities.length) {
         return '';
     }
 
@@ -45,7 +45,7 @@ const ComparisonChart = ({citiesData}) => {
                 x="city"
                 y="aqi"
                 style={{data: {fill: ({datum}) => datum.airQuality.color}}}
-                data={citiesData}
+                data={cities}
                 animate={{onLoad: {duration: 1000}}}
                 labels={({datum}) => `City: ${datum.city} \n AQI: ${Math.round(datum.aqi)} \n Air Quality: ${datum.airQuality.category}`}
                 labelComponent={
