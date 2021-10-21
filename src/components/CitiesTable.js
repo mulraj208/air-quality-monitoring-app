@@ -5,7 +5,7 @@ import {getRelativeTime} from "../utils/date-utils";
 const CitiesTable = ({cities}) => {
     return (
         <div className="cities-table-container overflow-x-auto">
-            <table className="w-full text-left mb-4">
+            <table className="w-full text-left">
                 <thead>
                 <tr>
                     <th className="border px-4 py-2 whitespace-nowrap">City</th>
@@ -26,7 +26,7 @@ const CitiesTable = ({cities}) => {
                         >
                             {city.aqi}
                         </td>
-                        <td className="border px-4 py-2 whitespace-nowrap font-medium capitalize">
+                        <td className="border px-4 py-2 whitespace-nowrap font-medium">
                             {getRelativeTime(city.timestamp)}
                         </td>
                         <td className="border px-4 py-2 whitespace-nowrap font-medium">

@@ -7,10 +7,11 @@ import Home from "./pages/Home";
 import './App.css';
 
 const client = new WebSocket(WEB_SOCKET_URL);
-let citiesObj = {};
+let globalCitiesObj = {};
 
 function App() {
     const [cities, setCities] = useState([]);
+    const [citiesObj, setCitiesObj] = useState({});
 
     useEffect(() => {
         client.onopen = () => console.log('WebSocket Client Connected');
@@ -21,7 +22,7 @@ function App() {
 
             data.forEach((item) => {
                 const citySlug = urlSlug(item.city);
-                const prevCityObj = citiesObj[citySlug];
+                const prevCityObj = globalCitiesObj[citySlug];
 
                 // Check if city is present, if not then add
                 // Check if the Aqi is changed
@@ -36,12 +37,13 @@ function App() {
                         timestamp
                     };
 
-                    citiesObj = {...citiesObj, [citySlug]: newObj};
+                    globalCitiesObj = {...globalCitiesObj, [citySlug]: newObj};
                 }
             });
 
             // Array is needed for comparison chart
-            const citiesSortedArr = Object.keys(citiesObj).map((key) => citiesObj[key]).sort((a, b) => (a.aqi - b.aqi));
+            const citiesSortedArr = Object.keys(globalCitiesObj).map((key) => globalCitiesObj[key]).sort((a, b) => (a.aqi - b.aqi));
+            setCitiesObj(globalCitiesObj);
             setCities(citiesSortedArr);
         };
 
@@ -58,17 +60,28 @@ function App() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+    if (!cities.length) {
+        return <div>Loading...</div>;
+    }
+
     return (
-        <Router>
-            <Switch>
-                <Route exact path="/">
-                    <Home cities={cities}/>
-                </Route>
-                <Route path="/city/:cityName">
-                    <CityPage/>
-                </Route>
-            </Switch>
-        </Router>
+        <main className="app-container max-w-3xl mx-auto p-3 xl:p-5 bg-gray-100">
+            <Router>
+                <Switch>
+                    <Route exact path="/">
+                        <Home cities={cities}/>
+                    </Route>
+                    <Route path="/city/:cityName">
+                        <CityPage cities={citiesObj}/>
+                    </Route>
+                    <Route path="*">
+                        <div className="min-h-screen flex items-center justify-center">
+                            <h1 className="text-2xl mb-5 font-bold">Page Not Found!</h1>
+                        </div>
+                    </Route>
+                </Switch>
+            </Router>
+        </main>
     );
 }
 

@@ -24,3 +24,5 @@ export function truncateText(string, maxCharacters = 10) {
 export function urlSlug(str) {
     return str.trim().toLowerCase().split(/\s+/).join("-");
 }
+
+export const ConditionalWrapper = ({ condition, wrapper, children }) => (condition ? wrapper(children) : children);
