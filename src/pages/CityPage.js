@@ -1,12 +1,39 @@
-import React from 'react';
+import React, {useMemo} from 'react';
 import {Link, useParams} from "react-router-dom";
 import HistoricalChart from "../components/HistoricalChart";
 import {MdOutlineArrowBack} from 'react-icons/md/index';
 import CityCard from "../components/CityCard";
+import {MONTHS_ABBREVIATION} from "../constants/global-constans";
+import {getAirQualityByIndex} from "../utils";
+import range from "lodash/range";
+import MagnifiedChart from "../components/MagnifiedChart";
+
+let dummyData = {};
+const magnifiedChartData = [];
+const YEARS = range(1990, 2021);
 
 const CityPage = ({cities}) => {
     const {cityName} = useParams();
     const cityObj = cities[cityName];
+
+    useMemo(() => {
+        YEARS.forEach((year) => {
+            dummyData[year] = MONTHS_ABBREVIATION.map((month, index) => {
+                const randomAqi = (Math.floor(Math.random() * 400) + 30);
+                const monthData = {
+                    city: cityName,
+                    aqi: randomAqi,
+                    airQuality: getAirQualityByIndex(randomAqi),
+                    month,
+                    year: new Date(year, index, 1)
+                };
+
+                magnifiedChartData.push(monthData);
+
+                return monthData;
+            });
+        });
+    }, [cityName]);
 
     if (!cityObj) {
         return <div>Loading...</div>;
@@ -15,14 +42,14 @@ const CityPage = ({cities}) => {
     return (
         <>
             <div className="mb-3 text-base text-blue-500 flex items-center">
-                <MdOutlineArrowBack className="mr-1" />
+                <MdOutlineArrowBack className="mr-1"/>
                 <Link to="/">Home</Link>
             </div>
             <div className="overview-wrapper">
                 <h1 className="text-2xl mb-4 font-bold"> What is the current air quality in {cityObj.city}?</h1>
             </div>
             <div className="my-5 bg-white shadow-md rounded-xl">
-                <CityCard city={cityObj} isLinked={false} />
+                <CityCard city={cityObj} isLinked={false}/>
                 <p className="mb-3 p-3 pt-0 text-gray-400">
                     At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum
                     deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non
@@ -30,7 +57,12 @@ const CityPage = ({cities}) => {
                     fuga.
                 </p>
             </div>
-            <HistoricalChart {...{cityObj, cityName}} />
+            <div className="my-5">
+                <HistoricalChart {...{cityObj, cityName, dummyData}} />
+            </div>
+            <div className="my-5">
+                <MagnifiedChart data={magnifiedChartData} />
+            </div>
         </>
     )
 };

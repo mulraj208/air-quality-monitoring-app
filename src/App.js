@@ -4,6 +4,7 @@ import {WEB_SOCKET_URL} from "./constants/global-constans";
 import {getAirQualityByIndex, urlSlug} from "./utils";
 import CityPage from "./pages/CityPage";
 import Home from "./pages/Home";
+import ScrollToTop from "./components/ScrollTop";
 import './App.css';
 
 const client = new WebSocket(WEB_SOCKET_URL);
@@ -67,6 +68,7 @@ function App() {
     return (
         <main className="app-container max-w-3xl mx-auto p-3 xl:p-5 bg-gray-100">
             <Router>
+                <ScrollToTop/>
                 <Switch>
                     <Route exact path="/">
                         <Home cities={cities}/>

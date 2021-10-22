@@ -1,23 +1,20 @@
 import React, {useState} from 'react';
-import {VictoryChart, VictoryZoomContainer, VictoryLine, VictoryBrushContainer, VictoryAxis} from 'victory';
+import {
+    VictoryChart,
+    VictoryZoomContainer,
+    VictoryBrushContainer,
+    VictoryAxis,
+    VictoryScatter,
+    VictoryTooltip
+} from 'victory';
 
-const data = [
-    {a: new Date(1982, 1, 1), b: 125},
-    {a: new Date(1987, 1, 1), b: 257},
-    {a: new Date(1993, 1, 1), b: 345},
-    {a: new Date(1997, 1, 1), b: 515},
-    {a: new Date(2001, 1, 1), b: 132},
-    {a: new Date(2005, 1, 1), b: 305},
-    {a: new Date(2011, 1, 1), b: 270},
-    {a: new Date(2015, 1, 1), b: 470}
-];
-
-const ZoomChart = () => {
-    const [zoomDomain, setZoomDomain] = useState({});
+const MagnifiedChart = ({data}) => {
+    const [zoomDomain, setZoomDomain] = useState({x: [new Date(2018, 1, 1), new Date(2020, 12, 1)]});
 
     return (
-        <div>
+        <div className="overflow-hidden">
             <VictoryChart
+                domainPadding={20}
                 width={600} height={470} scale={{x: "time"}}
                 containerComponent={
                     <VictoryZoomContainer
@@ -27,17 +24,18 @@ const ZoomChart = () => {
                     />
                 }
             >
-                <VictoryLine
-                    style={{
-                        data: {stroke: "tomato"}
-                    }}
+                <VictoryScatter
                     data={data}
-                    x="a"
-                    y="b"
+                    size={5}
+                    style={{data: {fill: "tomato"}}}
+                    labels={({datum}) => datum.aqi}
+                    labelComponent={<VictoryTooltip/>}
+                    x="year"
+                    y="aqi"
                 />
-
             </VictoryChart>
             <VictoryChart
+                domainPadding={10}
                 padding={{top: 0, left: 50, right: 50, bottom: 30}}
                 width={600} height={100} scale={{x: "time"}}
                 containerComponent={
@@ -48,21 +46,17 @@ const ZoomChart = () => {
                     />
                 }
             >
-                <VictoryAxis
-                    tickFormat={(x) => new Date(x).getFullYear()}
-                />
-                <VictoryLine
-                    style={{
-                        data: {stroke: "tomato"}
-                    }}
+                <VictoryAxis tickFormat={(x) => new Date(x).getFullYear()}/>
+                <VictoryScatter
                     data={data}
-                    x="key"
-                    y="b"
+                    size={1}
+                    style={{data: {fill: "tomato"}}}
+                    x="year"
+                    y="aqi"
                 />
             </VictoryChart>
         </div>
     );
 };
 
-
-export default ZoomChart;
+export default MagnifiedChart;

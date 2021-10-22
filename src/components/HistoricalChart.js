@@ -1,26 +1,17 @@
-import React, {useMemo} from 'react';
+import React from 'react';
 import range from 'lodash/range';
-import {
-    VictoryChart,
-    VictoryLabel,
-    VictoryBar,
-    VictoryTooltip,
-    VictoryAxis
-} from 'victory';
+import {VictoryChart, VictoryLabel, VictoryBar, VictoryTooltip, VictoryAxis} from 'victory';
 import Slider from 'react-rangeslider';
 import 'react-rangeslider/lib/index.css';
 import {MONTHS_ABBREVIATION} from "../constants/global-constans";
-import {getAirQualityByIndex, truncateText} from "../utils";
+import {truncateText} from "../utils";
 
 const LIGHT_GREY = "hsl(355, 20%, 90%)";
-
-let dummyData = {};
 const YEARS = range(1990, 2021);
 const yearToSeason = year => `${year}-${(year + 1 + "").slice(2, 4)}`;
 const FIRST_YEAR = YEARS[0];
 const LAST_YEAR = YEARS[YEARS.length - 1];
 const TOTAL_YEARS = LAST_YEAR - FIRST_YEAR;
-
 const axisStyles = {
     axis: {
         stroke: "transparent"
@@ -39,24 +30,9 @@ const axisStyles = {
 
 const fillBarColor = ({datum}) => datum.airQuality.color;
 
-const HistoricalChart = ({cityObj}) => {
+const HistoricalChart = ({cityObj, dummyData}) => {
     const [year, setYear] = React.useState(FIRST_YEAR);
     const cityName = cityObj.city;
-
-    useMemo(() => {
-        YEARS.forEach((year) => {
-            dummyData[year] = MONTHS_ABBREVIATION.map((month) => {
-                const randomAqi = (Math.floor(Math.random() * 400) + 30);
-
-                return {
-                    city: cityName,
-                    aqi: randomAqi,
-                    airQuality: getAirQualityByIndex(randomAqi),
-                    month
-                }
-            });
-        });
-    }, [cityName]);
 
     return (
         <div className="bg-gray-700 p-3 lg:p-5 rounded-lg">
