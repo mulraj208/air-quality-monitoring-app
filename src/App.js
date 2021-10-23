@@ -1,5 +1,6 @@
 import React, {useEffect, useState, lazy, Suspense} from 'react';
 import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
+import {throttle} from 'lodash';
 import {WEB_SOCKET_URL} from "./constants/global-constans";
 import {getAirQualityByIndex, urlSlug} from "./utils";
 import Loading from "./components/Loading";
@@ -19,8 +20,9 @@ function App() {
     useEffect(() => {
         client.onopen = () => console.log('WebSocket Client Connected');
         client.onclose = () => console.log('WebSocket Client Disconnected');
+        client.onerror = (event) => console.log('WebSocket Error', event);
 
-        client.onmessage = (message) => {
+        const onMessage = throttle(function (message) {
             const data = JSON.parse(message.data);
 
             data.forEach((item) => {
@@ -48,15 +50,12 @@ function App() {
             const citiesSortedArr = Object.keys(globalCitiesObj).map((key) => globalCitiesObj[key]).sort((a, b) => (a.aqi - b.aqi));
             setCitiesObj(globalCitiesObj);
             setCities(citiesSortedArr);
-        };
+        }, 5000, {leading: true});
 
-        // Remove this before submitting
-        // Check performance
-        setTimeout(() => {
-            client.close();
-        }, 4000);
+        client.addEventListener('message', onMessage);
 
         return () => {
+            client.removeEventListener('message', onMessage);
             client.close();
         };
 
