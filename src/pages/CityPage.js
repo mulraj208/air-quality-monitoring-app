@@ -4,13 +4,31 @@ import HistoricalChart from "../components/HistoricalChart";
 import {MdOutlineArrowBack} from 'react-icons/md/index';
 import CityCard from "../components/CityCard";
 import {MONTHS_ABBREVIATION} from "../constants/global-constans";
-import {getAirQualityByIndex} from "../utils";
+import {getAirQualityByIndex, THEME} from "../utils";
 import range from "lodash/range";
 import MagnifiedChart from "../components/MagnifiedChart";
+import Loading from "../components/Loading";
 
 let dummyData = {};
 const magnifiedChartData = [];
 const YEARS = range(1990, 2021);
+const {lightGrey} = THEME;
+const axisStyles = {
+    axis: {
+        stroke: "transparent",
+    },
+    tickLabels: {
+        fill: lightGrey,
+        fontSize: 12,
+        fontWeight: 700
+    },
+    axisLabel: {
+        fill: lightGrey,
+        padding: 36,
+        fontSize: 12,
+        fontStyle: "italic"
+    }
+};
 
 const CityPage = ({cities}) => {
     const {cityName} = useParams();
@@ -36,7 +54,7 @@ const CityPage = ({cities}) => {
     }, [cityName]);
 
     if (!cityObj) {
-        return <div>Loading...</div>;
+        return <Loading/>;
     }
 
     return (
@@ -58,10 +76,10 @@ const CityPage = ({cities}) => {
                 </p>
             </div>
             <div className="my-5">
-                <HistoricalChart {...{cityObj, cityName, dummyData}} />
+                <HistoricalChart {...{cityObj, cityName, dummyData, axisStyles}} />
             </div>
             <div className="my-5">
-                <MagnifiedChart data={magnifiedChartData} />
+                <MagnifiedChart data={magnifiedChartData} maxPoints={100} axisStyles={axisStyles}/>
             </div>
         </>
     )

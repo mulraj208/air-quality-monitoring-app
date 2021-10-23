@@ -26,3 +26,9 @@ export function urlSlug(str) {
 }
 
 export const ConditionalWrapper = ({ condition, wrapper, children }) => (condition ? wrapper(children) : children);
+
+
+export const THEME = {
+    lightGrey: "#ebe0e1",
+    darkBlue: "#142b7e",
+};

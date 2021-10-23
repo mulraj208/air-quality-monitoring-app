@@ -4,33 +4,17 @@ import {VictoryChart, VictoryLabel, VictoryBar, VictoryTooltip, VictoryAxis} fro
 import Slider from 'react-rangeslider';
 import 'react-rangeslider/lib/index.css';
 import {MONTHS_ABBREVIATION} from "../constants/global-constans";
-import {truncateText} from "../utils";
+import {THEME, truncateText} from "../utils";
 
-const LIGHT_GREY = "hsl(355, 20%, 90%)";
 const YEARS = range(1990, 2021);
 const yearToSeason = year => `${year}-${(year + 1 + "").slice(2, 4)}`;
 const FIRST_YEAR = YEARS[0];
 const LAST_YEAR = YEARS[YEARS.length - 1];
 const TOTAL_YEARS = LAST_YEAR - FIRST_YEAR;
-const axisStyles = {
-    axis: {
-        stroke: "transparent"
-    },
-    tickLabels: {
-        fill: LIGHT_GREY,
-        fontSize: 12
-    },
-    axisLabel: {
-        fill: LIGHT_GREY,
-        padding: 36,
-        fontSize: 12,
-        fontStyle: "italic"
-    }
-};
 
 const fillBarColor = ({datum}) => datum.airQuality.color;
 
-const HistoricalChart = ({cityObj, dummyData}) => {
+const HistoricalChart = ({cityObj, dummyData, axisStyles}) => {
     const [year, setYear] = React.useState(FIRST_YEAR);
     const cityName = cityObj.city;
 
@@ -42,7 +26,7 @@ const HistoricalChart = ({cityObj, dummyData}) => {
                     x={225}
                     y={18}
                     textAnchor="middle"
-                    style={{fill: LIGHT_GREY, fontSize: 16}}
+                    style={{fill: THEME.lightGrey, fontSize: 16}}
                 />
                 <VictoryAxis
                     tickFormat={(label) => truncateText(label)}
@@ -76,8 +60,8 @@ const HistoricalChart = ({cityObj, dummyData}) => {
                             orientation="top"
                             pointerWidth={1}
                             flyoutStyle={{
-                                fill: "#142b7e",
-                                stroke: "#142b7e",
+                                fill: THEME.darkBlue,
+                                stroke: THEME.darkBlue,
                                 strokeWidth: 0.5,
                             }}
                             style={{fontSize: 10, fill: '#fff'}}

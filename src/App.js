@@ -1,11 +1,13 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, lazy, Suspense} from 'react';
 import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
 import {WEB_SOCKET_URL} from "./constants/global-constans";
 import {getAirQualityByIndex, urlSlug} from "./utils";
-import CityPage from "./pages/CityPage";
-import Home from "./pages/Home";
+import Loading from "./components/Loading";
 import ScrollToTop from "./components/ScrollTop";
 import './App.css';
+
+const Home = lazy(() => import("./pages/Home"));
+const CityPage = lazy(() => import("./pages/CityPage"));
 
 const client = new WebSocket(WEB_SOCKET_URL);
 let globalCitiesObj = {};
@@ -62,7 +64,7 @@ function App() {
     }, []);
 
     if (!cities.length) {
-        return <div>Loading...</div>;
+        return <Loading/>;
     }
 
     return (
@@ -71,10 +73,14 @@ function App() {
                 <ScrollToTop/>
                 <Switch>
                     <Route exact path="/">
-                        <Home cities={cities}/>
+                        <Suspense fallback={<Loading/>}>
+                            <Home cities={cities}/>
+                        </Suspense>
                     </Route>
                     <Route path="/city/:cityName">
-                        <CityPage cities={citiesObj}/>
+                        <Suspense fallback={<Loading/>}>
+                            <CityPage cities={citiesObj}/>
+                        </Suspense>
                     </Route>
                     <Route path="*">
                         <div className="min-h-screen flex items-center justify-center">
